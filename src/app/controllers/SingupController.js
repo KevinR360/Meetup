@@ -4,6 +4,7 @@ import Meetup from '../models/Meetup';
 import User from '../models/User';
 import Subscribers from '../models/Subscribers';
 import Notification from '../schemas/Notifications';
+import Mail from '../../lib/Mail';
 
 class SingupController {
   async index(req, res) {
@@ -25,7 +26,15 @@ class SingupController {
   async store(req, res) {
     const { id } = req.params;
 
-    const meetup = await Meetup.findByPk(id);
+    const meetup = await Meetup.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: 'provider',
+          attributes: ['name', 'email'],
+        },
+      ],
+    });
     // Check Event
     if (!meetup) {
       return res.status(400).json({ error: 'This event does not exist' });
@@ -89,6 +98,12 @@ class SingupController {
     await Notification.create({
       content: `${user.name} acabou de se inscrever no seu evento ${meetup.title}`,
       user: meetup.provider_id,
+    });
+
+    await Mail.sendMail({
+      to: `${meetup.provider.name} <${meetup.provider.email}>`,
+      subject: `Inscrição no evento ${meetup.title}`,
+      text: `Você tem um novo inscrito no evento ${meetup.title}`,
     });
 
     return res.json(sub);

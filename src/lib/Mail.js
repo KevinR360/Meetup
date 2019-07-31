@@ -13,6 +13,13 @@ class Mail {
       auth: auth.user ? auth : null,
     });
   }
+
+  sendMail(message) {
+    return this.transporter.sendMail({
+      ...mailConfig.default,
+      ...message,
+    });
+  }
 }
 
 export default new Mail();
