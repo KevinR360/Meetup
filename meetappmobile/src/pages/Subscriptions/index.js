@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-
+import {format, parseISO} from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
 import Background from '~/components/Background';
 import Header from '~/components/Header';
 
@@ -22,29 +22,40 @@ import {
 
 import api from '~/services/api';
 
-export default function Subscriptions() {
+export default function Subscriptions({isFocused}) {
   const [meetups, setMeetups] = useState([]);
 
+  async function loadMeetups() {
+    const response = await api.get('subscribe');
+
+    const data = response.data.map(subscribe => ({
+      ...subscribe,
+      dateMeetupFormated: format(
+        parseISO(subscribe.meetup.date),
+        "dd 'de' MMMM",
+        {
+          locale: pt,
+        },
+      ),
+    }));
+
+    setMeetups(data);
+  }
+
   useEffect(() => {
-    async function loadMeetups() {
-      const response = await api.get('subscribe');
-
-      const data = response.data.map(subscribe => ({
-        ...subscribe,
-        dateMeetupFormated: format(
-          parseISO(subscribe.meetup.date),
-          "d 'de' MMMM",
-          {
-            locale: pt,
-          },
-        ),
-      }));
-
-      setMeetups(data);
+    if (isFocused) {
+      loadMeetups();
     }
+  }, [isFocused]);
 
+  useEffect(() => {
     loadMeetups();
   }, []);
+
+  async function handleCancelSubscribe(id) {
+    await api.delete(`subscribe/${id}/cancel`);
+    loadMeetups();
+  }
 
   return (
     <Background>
@@ -65,11 +76,12 @@ export default function Subscriptions() {
                 />
                 <Title>{item.meetup.title}</Title>
                 <Infos>
-                  <DateMeetup>{item.meetup.date}</DateMeetup>
+                  <DateMeetup>{item.dateMeetupFormated}</DateMeetup>
                   <AddressMeetup>{item.meetup.location}</AddressMeetup>
                   <Author>{`Organizador: ${item.meetup.author.name}`}</Author>
                 </Infos>
-                <CancelSubscribeButton onPress={() => handleSubscribe(item.id)}>
+                <CancelSubscribeButton
+                  onPress={() => handleCancelSubscribe(item.id)}>
                   Cancelar Inscrição
                 </CancelSubscribeButton>
               </Meetup>
@@ -90,9 +102,9 @@ export default function Subscriptions() {
   );
 }
 
-// Subscriptions.navigationOptions = {
-//   tabBarLabel: 'Incrições',
-//   tabBarIcon: ({tintColor}) => (
-//     <Icon name="event" size={20} color={tintColor} />
-//   ),
-// };
+Subscriptions.navigationOptions = {
+  tabBarLabel: 'Incrições',
+  tabBarIcon: ({tintColor}) => (
+    <Icon name="local-offer" size={20} color={tintColor} />
+  ),
+};

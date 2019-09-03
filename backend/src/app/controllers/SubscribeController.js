@@ -135,9 +135,9 @@ class SubscribeController {
   }
 
   async delete(req, res) {
-    const subscribers = await Subscribers.findOne({
-      where: { meetup_id: req.params.id, subs_id: req.userId },
-    });
+    const { id } = req.params;
+
+    const subscribers = await Subscribers.findByPk(id);
 
     subscribers.destroy();
 

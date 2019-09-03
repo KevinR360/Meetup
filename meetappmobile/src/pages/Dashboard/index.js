@@ -128,8 +128,8 @@ export default function Dashboard() {
 }
 
 Dashboard.navigationOptions = {
-  tabBarLabel: 'DashBoard',
+  tabBarLabel: 'Meetups',
   tabBarIcon: ({tintColor}) => (
-    <Icon name="event" size={20} color={tintColor} />
+    <Icon name="format-list-bulleted" size={20} color={tintColor} />
   ),
 };
