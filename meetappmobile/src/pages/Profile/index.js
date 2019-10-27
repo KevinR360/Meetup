@@ -15,6 +15,7 @@ import {
   LogoutButton,
 } from './styles';
 
+
 export default function Profile() {
   const dispatch = useDispatch();
 
@@ -57,7 +58,7 @@ export default function Profile() {
       <Container>
         <Header>Meu Perfil</Header>
 
-        <Form>
+        <Form >
           <FormInput
             icon="person-outline"
             autoCorrect={false}

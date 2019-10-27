@@ -40,6 +40,8 @@ export function* signUp({ payload }) {
 
     yield put(signUpSuccess());
 
+    toast.success('Cadastro realizado com sucesso!');
+
     history.push('/');
   } catch (err) {
     toast.error('Falha no cadastro, verifique seus dados!');

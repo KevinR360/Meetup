@@ -41,6 +41,13 @@ export const Content = styled.div`
       border-radius: 4px;
     }
 
+    span {
+      color: #fb6f91;
+      align-self: flex-start;
+      margin: 0 0 10px;
+      font-weight: bold;
+    }
+
     button {
       height: 42px;
       width: 180px;

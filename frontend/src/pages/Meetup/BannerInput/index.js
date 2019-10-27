@@ -48,7 +48,7 @@ export default function BannerInput() {
         ) : (
           <div>
             <MdCameraAlt size={60} color="#999" />
-            <span>Selecionar imagem</span>
+            <strong>Selecionar imagem</strong>
           </div>
         )}
 

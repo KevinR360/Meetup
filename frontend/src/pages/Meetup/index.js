@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Textarea } from '@rocketseat/unform';
+import { Form, Input } from '@rocketseat/unform';
 import { MdAddCircleOutline } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
+import * as Yup from 'yup';
 
 import BannerInput from './BannerInput';
 
@@ -14,14 +15,21 @@ import { Container, Content } from './styles';
 import api from '~/services/api';
 import history from '~/services/history';
 
+const schema = Yup.object().shape({
+  title: Yup.string().required('O titulo do evento é obrigatório'),
+  description: Yup.string(),
+  date: Yup.date(
+    'Ops você esqueceu da data, é necessário ter uma data.'
+  ).required('Ops você esqueceu da data, é necessário ter uma data.'),
+  location: Yup.string().required('Ops! Onde vai ocorrer o Meetup?'),
+});
+
 export default function Meetup() {
   const dispatch = useDispatch();
   const meetupState = useSelector(state => state.meetup.meetup);
   const meetup_id = window.location.search.replace('?', '');
   const action = window.location.pathname;
   const [meetup, setMeetup] = useState([]);
-
-  console.tron.log(action);
 
   useEffect(() => {
     async function loadMeetupData() {
@@ -52,12 +60,16 @@ export default function Meetup() {
   return (
     <Container>
       <Content>
-        <Form initialData={meetup_id ? meetup : null} onSubmit={handleSubmit}>
+        <Form
+          schema={schema}
+          initialData={meetup_id ? meetup : null}
+          onSubmit={handleSubmit}
+        >
           <BannerInput name="banner" />
           <Input name="title" type="text" placeholder="Titulo do Meetup" />
-          <Textarea
-            defaultValue={meetup.description}
+          <Input
             name="description"
+            multiline
             type="text"
             placeholder={meetup.description}
           />

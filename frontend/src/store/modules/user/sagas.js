@@ -6,7 +6,6 @@ import api from '~/services/api';
 import { updateProfileSuccess, updateProfileFailure } from './actions';
 
 export function* updateProfile({ payload }) {
-  console.tron.log(payload);
   try {
     const { name, email, avatar_id, ...rest } = payload.data;
 
@@ -16,7 +15,6 @@ export function* updateProfile({ payload }) {
     );
 
     const response = yield call(api.put, 'users', profile);
-    console.tron.log(response.data);
 
     toast.success('Perfil atualizado com sucesso!');
 

@@ -6,7 +6,6 @@ import history from '~/services/history';
 import { editMeetupSuccess, newMeetupSuccess } from './actions';
 
 export function* editMeetup({ payload }) {
-  console.tron.log(payload);
   try {
     const { id } = payload;
     const { title, description, location, date, banner } = payload.data;
@@ -24,6 +23,7 @@ export function* editMeetup({ payload }) {
     toast.success('Meetup autalizado com sucesso!');
 
     yield put(editMeetupSuccess(response.data));
+    history.push('/');
   } catch (err) {
     toast.error('Erro ao atualizar Meetup, confira os dados inseridos!');
   }
@@ -46,6 +46,7 @@ export function* newMeetup({ payload }) {
     toast.success('Meetup criado com sucesso!');
 
     yield put(newMeetupSuccess(response.data));
+    history.push('/');
   } catch (err) {
     toast.error('Erro ao criar Meetup, confira os dados inseridos!');
   }
